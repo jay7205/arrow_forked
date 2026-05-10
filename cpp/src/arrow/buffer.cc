@@ -20,7 +20,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <utility>
-
+#include <iostream>
 #include "arrow/memory_pool_internal.h"
 #include "arrow/result.h"
 #include "arrow/status.h"
@@ -66,6 +66,10 @@ Status CheckBufferSlice(const Buffer& buffer, int64_t offset) {
 Result<std::shared_ptr<Buffer>> SliceBufferSafe(std::shared_ptr<Buffer> buffer,
                                                 int64_t offset) {
   RETURN_NOT_OK(CheckBufferSlice(*buffer, offset));
+  std::cout << "[SYSTEM TRACE] Zero-Copy Slice Initiated!" << std::endl;
+  std::cout << " -> Original Buffer Address: " << static_cast<const void*>(buffer->data())
+            << std::endl;
+  std::cout << " -> Slice Offset Requested: " << offset << " bytes" << std::endl;
   return SliceBuffer(std::move(buffer), offset);
 }
 

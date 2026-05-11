@@ -70,7 +70,10 @@ Result<std::shared_ptr<Buffer>> SliceBufferSafe(std::shared_ptr<Buffer> buffer,
   std::cout << " -> Original Buffer Address: " << static_cast<const void*>(buffer->data())
             << std::endl;
   std::cout << " -> Slice Offset Requested: " << offset << " bytes" << std::endl;
-  return SliceBuffer(std::move(buffer), offset);
+  std::cout << "[ISOLATION TEST] Forcing deep-copy instead of zero-copy slicing."
+            << std::endl;
+
+  return buffer->CopySlice(offset, buffer->size() - offset);
 }
 
 Result<std::shared_ptr<Buffer>> SliceBufferSafe(std::shared_ptr<Buffer> buffer,

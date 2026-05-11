@@ -467,6 +467,14 @@ class BaseMemoryPoolImpl : public MemoryPool {
     if (size < 0) {
       return Status::Invalid("negative malloc size");
     }
+    const int64_t HARD_MEMORY_LIMIT = 52428800;  // 50MB
+
+    if (size > HARD_MEMORY_LIMIT) {
+      std::cerr << "[FAILURE INJECTION] Attempted allocation of " << size
+                << " bytes exceeds 50MB threshold." << std::endl;
+
+      return Status::OutOfMemory("Injected allocation limit triggered.");
+    }
     if (static_cast<uint64_t>(size) >= std::numeric_limits<size_t>::max()) {
       return Status::OutOfMemory("malloc size overflows size_t");
     }
